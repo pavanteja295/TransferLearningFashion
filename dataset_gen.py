@@ -14,6 +14,7 @@ from PIL import Image, ImageOps
 import cv2
 from bidict import bidict
 
+
 def pad_(dh, dw, img):
     delta_h = dh - img.size[1]
     delta_w = dw - img.size[0]
@@ -24,7 +25,7 @@ def pad_(dh, dw, img):
 
 
 class Fashion_Dataset(Dataset):
-    def __init__(self, dataset, split, transforms=torchvision.transforms.Compose([torchvision.transforms.ToTensor()]), finetune=False, debug=False):
+    def __init__(self, dataset, split, dir_, transforms=None, finetune=False, debug=False):
         super(Fashion_Dataset, self).__init__()
         cwd = os.getcwd()
         dict_path = os.path.join(cwd,'data', dataset, 'data.json')
@@ -36,6 +37,7 @@ class Fashion_Dataset(Dataset):
         else:
             ft_pt = 'pretrain'
 
+        self.dir_ = dir_
         self.data = data_[ft_pt][split]
         self.class_list =  bidict(data_[ft_pt]['class_list'])
         self.class_count = data_[ft_pt]['total_class_count']
@@ -57,7 +59,7 @@ class Fashion_Dataset(Dataset):
     
     def __getitem__(self, idx):
 
-        img_p = self.data['image_list'][idx]
+        img_p = os.path.join(self.dir_, self.data['image_list'][idx])
         img = Image.open(img_p).convert('RGB')
         img = pad_(80, 60, img)  #totensor already normalizes
         gt_ = self.data['class'][idx]
@@ -67,7 +69,7 @@ class Fashion_Dataset(Dataset):
         return img_t, gt_
 
     def __len__(self):
-        return 10#len(self.data['image_list'])
+        return len(self.data['image_list'])
 
 
         

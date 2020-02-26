@@ -50,19 +50,20 @@ def main():
                         help="Sampling for imbalance data")
     parser.add_argument('--num_workers', dest='num_workers', default=1, type=int,
                         help="Num data workers")
-    parser.add_argument('--debug',  default=False, action='store_true', 
+    parser.add_argument('--debug',  default=True, action='store_true', 
                         help='debug')
     parser.add_argument('--save_after',  default=30, type=int,
                         help='epochs to save model after')
-
+    parser.add_argument('--dir_',  default='/home/pavanteja/workspace/IntuitionMachines/transfer_learning/data/fashion-dataset-small/images', type=str,
+                        help='Image dir name')
     args = parser.parse_args()
     debug = args.debug
 
     datasets_ = {}
-    datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', debug=debug)
-    datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', debug=debug)
-    datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', finetune=True, debug=debug)
-    datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', finetune=True, debug=debug)
+    datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug)
+    datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug)
+    datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug)
+    datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug)
     
 
 
@@ -94,22 +95,24 @@ def main():
     
     if debug:
         for key, val in dataloaders_.items():
-            visualize_data(val, 5, key)
+            check_data(val, args.batch_size, key)
     
 
-    net = Network_(config)
-    if not args.model_weights:
-    # pre train 
-        net.train_(args.epochs)
-    # fine tune
-    net.train_(args.epochs, finetune=True)
+    # net = Network_(config)
+    # if not args.model_weights:
+    # # pre train 
+    #     net.train_(args.epochs)
+    # # fine tune
+    # net.train_(args.epochs, finetune=True)
 
-
-def visualize_data(data_loader, num, str_):
+def check_data(data_loader, num, str_):
     import matplotlib.pyplot as plt
     import numpy as np
     dataiter = iter(data_loader)
-    for ind in range(5):
+    dir_ = os.path.join('viz', str_)
+    if not os.path.exists(dir_):
+        os.makedirs(dir_)
+    for ind in range(10):
         
         images, labels = dataiter.next()
         images = images.numpy()
@@ -119,11 +122,13 @@ def visualize_data(data_loader, num, str_):
     # plot the images in the batch, along with the corresponding labels
         fig = plt.figure(figsize=(25, 4))
         for idx in np.arange(num):
-            ax = fig.add_subplot(1,5, idx+1, xticks=[], yticks=[])
+            ax = fig.add_subplot(1,num, idx+1, xticks=[], yticks=[])
             plt.imshow(np.transpose(images[idx], (1, 2, 0)))
             ax.set_title(data_loader.dataset.class_list.inverse[labels[idx]])
-        fig.savefig('viz/' + str_ + '/' + str(ind) +'.png'  )
-    
+        fig.savefig(os.path.join(dir_, str(ind) +'.png'  ))
+        plt.close()
+
+
 
 
 if __name__ == '__main__':

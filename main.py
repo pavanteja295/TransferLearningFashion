@@ -50,7 +50,7 @@ def main():
                         help="Sampling for imbalance data")
     parser.add_argument('--num_workers', dest='num_workers', default=1, type=int,
                         help="Num data workers")
-    parser.add_argument('--debug',  default=True, action='store_true', 
+    parser.add_argument('--debug',  default=False, action='store_true', 
                         help='debug')
     parser.add_argument('--save_after',  default=30, type=int,
                         help='epochs to save model after')

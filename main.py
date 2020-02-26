@@ -54,7 +54,7 @@ def main():
                         help='debug')
     parser.add_argument('--save_after',  default=30, type=int,
                         help='epochs to save model after')
-    parser.add_argument('--dir_',  default='/home/pavanteja/workspace/IntuitionMachines/transfer_learning/data/fashion-dataset-small/images', type=str,
+    parser.add_argument('--dir_', dest='dir_',  default='/home/pavanteja/workspace/IntuitionMachines/transfer_learning/data/fashion-dataset-small/images', type=str,
                         help='Image dir name')
     args = parser.parse_args()
     debug = args.debug

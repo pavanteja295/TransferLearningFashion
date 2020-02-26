@@ -54,8 +54,8 @@ def main():
                         help='debug')
     parser.add_argument('--save_after',  default=30, type=int,
                         help='epochs to save model after')
-    parser.add_argument('--dir_', dest='dir_',  default='/home/pavanteja/workspace/IntuitionMachines/transfer_learning/data/fashion-dataset-small/images', type=str,
-                        help='Image dir name')
+    parser.add_argument('--dir_', dest='dir_', default='/h,', type=str,
+                        help="Exp name to be added to the suffix")
     args = parser.parse_args()
     debug = args.debug
 

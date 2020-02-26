@@ -98,12 +98,12 @@ def main():
             check_data(val, args.batch_size, key)
     
 
-    # net = Network_(config)
-    # if not args.model_weights:
-    # # pre train 
-    #     net.train_(args.epochs)
-    # # fine tune
-    # net.train_(args.epochs, finetune=True)
+    net = Network_(config)
+    if not args.model_weights:
+    # pre train 
+        net.train_(args.epochs)
+    # fine tune
+    net.train_(args.epochs, finetune=True)
 
 def check_data(data_loader, num, str_):
     import matplotlib.pyplot as plt

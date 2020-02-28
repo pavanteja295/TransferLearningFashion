@@ -13,6 +13,11 @@ import torchvision.models as models
 from torch.utils.data import DataLoader
 from default import Network_
 import torch
+
+import torchvision
+from torchvision import transforms
+from bidict import bidict
+
 #sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True) for CIFAR 10
 def main():
     parser = argparse.ArgumentParser(description='Fashion Dataset')
@@ -60,12 +65,73 @@ def main():
     debug = args.debug
 
     datasets_ = {}
-    datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug)
-    datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug)
-    datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug)
-    datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug)
-    
+    if args.dataset != 'CIFAR100':
+        datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug)
+        datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug)
+        datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug)
+        datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug)
+    else:
+        dataroot = './data'
+        normalize = transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
 
+        val_transform = transforms.Compose([
+            transforms.ToTensor(),
+            normalize,
+        ])
+        train_transform = val_transform
+        
+
+        train_transform = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomRotation(15),
+            transforms.ToTensor(),
+            normalize,
+        ])
+        
+        datasets_['train_pt'] = torchvision.datasets.CIFAR100(
+            root=dataroot,
+            train=True,
+            download=True,
+            transform=train_transform
+        )
+
+        datasets_['train_ft'] = torchvision.datasets.CIFAR100(
+            root=dataroot,
+            train=True,
+            download=True,
+            transform=train_transform
+        )
+
+        datasets_['test_pt'] = torchvision.datasets.CIFAR100(
+            root=dataroot,
+            train=False,
+            download=True,
+            transform=val_transform
+        )
+
+        datasets_['test_ft'] = torchvision.datasets.CIFAR100(
+            root=dataroot,
+            train=False,
+            download=True,
+            transform=val_transform
+        )
+
+        datasets_['train_pt'].class_count  = { key_ : '500' for key_ in datasets_['train_pt'].class_to_idx.keys() }
+        datasets_['test_pt'].class_count  = { key_ : '500' for key_ in datasets_['test_pt'].class_to_idx.keys() }
+        
+        datasets_['train_pt'].class_list  = bidict(datasets_['train_pt'].class_to_idx)
+        datasets_['test_pt'].class_list  = bidict(datasets_['test_pt'].class_to_idx)
+
+
+        datasets_['train_ft'].class_count  = { key_ : '500' for key_ in datasets_['train_ft'].class_to_idx.keys() }
+        datasets_['test_ft'].class_count  = { key_ : '500' for key_ in datasets_['test_ft'].class_to_idx.keys() }
+        
+        datasets_['train_ft'].class_list  = bidict(datasets_['train_ft'].class_to_idx)
+        datasets_['test_ft'].class_list  = bidict(datasets_['test_ft'].class_to_idx)
+
+
+        # import pdb; pdb.set_trace()
 
     dataloaders_ = {}
     for key, val in datasets_.items():

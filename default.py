@@ -7,6 +7,7 @@ from focalloss import FocalLoss
 from tensorboardX import SummaryWriter
 from torch.optim.lr_scheduler import _LRScheduler
 import os
+from resnet import REsnet18
 
 
 class Network_(nn.Module):
@@ -61,11 +62,13 @@ class Network_(nn.Module):
 	# 	if self.config['freeze']:
 
 	def create_model(self):
-		model = models.__dict__[self.config['model_name']](pretrained=self.config['pretrain_in'])
+		if self.config['model_name'] == 'REsnet18':
+			model = REsnet18()
+		else:
+			model = models.__dict__[self.config['model_name']](pretrained=self.config['pretrain_in'])
 
 		# Freeze training for all "features" layers
 		if self.config['freeze'] != 'None':
-			import pdb; pdb.set_trace()
 			for param in model.parameters():
 				param.requires_grad = False
 

@@ -159,8 +159,8 @@ def main():
                            'finetune' : [dataloaders_['train_ft'], dataloaders_['test_ft']]},
                'gpuid': args.gpuid, 'lr': args.lr, 'momentum': args.momentum, 'weight_decay': args.weight_decay,'schedule': args.schedule,
                'optimizer':args.optimizer,  'exp_name' : args.exp_name, 'nesterov':args.nesterov, 'model_name': args.model_name, 'pretrain_in':args.pretrain_in,
-               'model_weights':args.model_weights, 'loss': args.loss, 'save_after':args.save_after, 'freeze': args.freeze }      
-    
+               'model_weights':args.model_weights, 'loss': args.loss, 'save_after':args.save_after, 'freeze': args.freeze, 'gamma' :args.gamma }      
+     
     if debug:
         for key, val in dataloaders_.items():
             check_data(val, args.batch_size, key)

@@ -151,9 +151,9 @@ class Network_(nn.Module):
 		for i, (input, target) in enumerate(self.test_loader):
 
 			if self.gpu:
-				with torch.no_grad():
-					input = input.cuda()
-					target = target.cuda()
+				#with torch.no_grad():
+				input = input.cuda()
+				target = target.cuda()
 			output = self.forward(input)
 			loss = self.criterion(output, target)
 			losses.update(loss, input.size(0))        

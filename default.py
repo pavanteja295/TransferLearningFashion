@@ -255,8 +255,8 @@ class Network_(nn.Module):
 		
 
 			acc_v, loss_v = self.validation()
-			self.writer.add_scalar(str_ + '/Loss_test', losses.avg, self.n_iter)
-			self.writer.add_scalar(str_ + '/Acc_test' , acc.avg, self.n_iter)
+			self.writer.add_scalar(str_ + '/Loss_test', loss_v.avg, self.n_iter)
+			self.writer.add_scalar(str_ + '/Acc_test' , acc_v.avg, self.n_iter)
 
 			if epoch % self.save_after == 0 and epoch!=0:
 				self.save_model(str_ + str(epoch) )

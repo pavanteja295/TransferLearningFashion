@@ -63,6 +63,8 @@ def main():
                         help="Exp name to be added to the suffix")
     parser.add_argument('--freeze', dest='freeze', default='fc', type=str,
                         help="Exp name to be added to the suffix")    # give resnets layer
+    parser.add_argument('--gamma', dest='gamma', default=0.2, type=float,
+                        help="Lr drop")    # give resnets layer
     args = parser.parse_args()
     debug = args.debug
 

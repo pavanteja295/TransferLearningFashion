@@ -7,7 +7,7 @@ from focalloss import FocalLoss
 from tensorboardX import SummaryWriter
 from torch.optim.lr_scheduler import _LRScheduler
 import os
-from resnet import REsnet18
+from resnet import RESNET18
 
 
 class Network_(nn.Module):
@@ -62,8 +62,8 @@ class Network_(nn.Module):
 	# 	if self.config['freeze']:
 
 	def create_model(self):
-		if self.config['model_name'] == 'REsnet18':
-			model = REsnet18()
+		if self.config['model_name'] == 'RESNET18':
+			model = RESNET18()
 		else:
 			model = models.__dict__[self.config['model_name']](pretrained=self.config['pretrain_in'])
 

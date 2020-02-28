@@ -134,7 +134,7 @@ class ResNet(nn.Module):
 
         return output 
 
-def REsnet18():
+def RESNET18():
     """ return a ResNet 18 object
     """
     return ResNet(BasicBlock, [2, 2, 2, 2])

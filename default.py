@@ -64,8 +64,10 @@ class Network_(nn.Module):
 		model = models.__dict__[self.config['model_name']](pretrained=self.config['pretrain_in'])
 
 		# Freeze training for all "features" layers
-		for param in model.parameters():
-			param.requires_grad = False
+		if self.config['freeze'] != 'None':
+			import pdb; pdb.set_trace()
+			for param in model.parameters():
+				param.requires_grad = False
 
 		n_inp = model.fc.in_features
 		model.fc = nn.Linear(n_inp, len(self.train_loader.dataset.class_list))
@@ -102,7 +104,8 @@ class Network_(nn.Module):
 		# Freeze training for all "features" layers
 		for param in self.model.parameters():
 			param.requires_grad = False
-	
+
+		
 		print('FINETUNING number of classes are ', len(self.train_loader.dataset.class_list))
 		n_inp = self.model.fc.in_features
 		self.model.fc = nn.Linear(n_inp, len(self.train_loader.dataset.class_list))

@@ -37,7 +37,7 @@ def main():
     parser.add_argument('--pretrain_in', default=False, action='store_true',
                         help="Load Imagenet weights")
     # for now just single value
-    parser.add_argument('--epochs', nargs="+", type=int, default=120,
+    parser.add_argument('--epochs',  type=int, default=120,
                         help="epochs one for pretrain one for finetune")
 
     parser.add_argument('--lr', type=float, default=0.001, help="Learning rate")

@@ -136,53 +136,54 @@ class Network_(nn.Module):
 		self.optimizer.step()
 		return loss.detach(), out
 
-	# def validation(self):
-    #     # this might possibly change for other incremental scenario
-    #     # This function doesn't distinguish tasks.
-	# 	batch_timer = Timer()
-	# 	acc = AverageMeter()
-	# 	losses = AverageMeter()
-	# 	acc_5 = AverageMeter()
-	# 	acc_class =  [AverageMeter() for i in range(len(self.train_loader.dataset.class_list))]  #[AverageMeter()] *  len(self.train_loader.dataset.class_list)
-	# 	acc_class_5 = [AverageMeter() for i in range(len(self.train_loader.dataset.class_list))]  
-	# 	batch_timer.tic()
-	# 	orig_mode = self.training	
-	# 	self.eval()
-	# 	for i, (input, target) in enumerate(self.test_loader):
+	def validation(self):
+        # this might possibly change for other incremental scenario
+        # This function doesn't distinguish tasks.
+		batch_timer = Timer()
+		acc = AverageMeter()
+		losses = AverageMeter()
+		acc_5 = AverageMeter()
+		acc_class =  [AverageMeter() for i in range(len(self.train_loader.dataset.class_list))]  #[AverageMeter()] *  len(self.train_loader.dataset.class_list)
+		acc_class_5 = [AverageMeter() for i in range(len(self.train_loader.dataset.class_list))]  
+		batch_timer.tic()
+		orig_mode = self.training	
+		self.eval()
+		for i, (input, target) in enumerate(self.test_loader):
 
-	# 		if self.gpu:
-	# 			print(self.gpu)
-	# 			with torch.no_grad():
-	# 				input = input.cuda()
-	# 				target = target.cuda()
-	# 		output = self.forward(input)
-	# 		loss = self.criterion(output, target)
-	# 		losses.update(loss, input.size(0))        
-	# 		# Summarize the performance of all tasks, or 1 task, depends on dataloader.
-	# 		# Calculated by total number of data.
+			if self.gpu:
+				print(self.gpu)
+				with torch.no_grad():
+					input = input.cuda()
+					target = target.cuda()
+					output = self.forward(input)
+					loss = self.criterion(output, target)
+
+			losses.update(loss, input.size(0))        
+			# Summarize the performance of all tasks, or 1 task, depends on dataloader.
+			# Calculated by total number of data.
 			
-	# 		#t_acc, acc_class = accuracy(output, target, topk=(1,), avg_meters=acc_class) #self.accumulate_acc(output, target, acc)
-	# 		#t_acc_5, acc_class_5 = accuracy(output, target, topk=(5,), avg_meters=acc_class_5)
-	# 		# import pdb; pdb.set_trace()
-	# 		acc.update(t_acc, len(target))
-	# 		acc_5.update(t_acc_5, len(target))
+			#t_acc, acc_class = accuracy(output, target, topk=(1,), avg_meters=acc_class) #self.accumulate_acc(output, target, acc)
+			#t_acc_5, acc_class_5 = accuracy(output, target, topk=(5,), avg_meters=acc_class_5)
+			# import pdb; pdb.set_trace()
+			acc.update(t_acc, len(target))
+			acc_5.update(t_acc_5, len(target))
 
-	# 	class_list = self.train_loader.dataset.class_list.inverse
-	# 	acc_cl_1 = {}
-	# 	acc_cl_5 = {}
+		class_list = self.train_loader.dataset.class_list.inverse
+		acc_cl_1 = {}
+		acc_cl_5 = {}
 		
-	# 	# for idx, cl_ in class_list.items():
-	# 	# 	acc_cl_1[cl_] = [acc_class[idx].avg,  acc_class[idx].sum, acc_class[idx].count] 
-	# 	# 	acc_cl_5[cl_] = [acc_class_5[idx].avg,  acc_class_5[idx].sum,  acc_class_5[idx].count]
-	# 	# 	self.log(' * Val Acc {acc.avg:.3f} for class {cls}, {acc.sum} / {acc.count} '
-	# 	# 		.format(acc=acc_class[idx], cls=cl_))
+		# for idx, cl_ in class_list.items():
+		# 	acc_cl_1[cl_] = [acc_class[idx].avg,  acc_class[idx].sum, acc_class[idx].count] 
+		# 	acc_cl_5[cl_] = [acc_class_5[idx].avg,  acc_class_5[idx].sum,  acc_class_5[idx].count]
+		# 	self.log(' * Val Acc {acc.avg:.3f} for class {cls}, {acc.sum} / {acc.count} '
+		# 		.format(acc=acc_class[idx], cls=cl_))
 		
 
-	# 	self.train(orig_mode)
+		self.train(orig_mode)
 
-	# 	self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
-	# 			.format(acc=acc,time=batch_timer.toc()))
-	# 	return acc, losses
+		self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
+				.format(acc=acc,time=batch_timer.toc()))
+		return acc, losses
 
 	def predict(self, inputs):
 		self.model.eval()
@@ -190,7 +191,7 @@ class Network_(nn.Module):
 		return out
 
 
-	def validation(self):
+	def validation(self, test_loader):
 		# this might possibly change for other incremental scenario
 		# This function doesn't distinguish tasks.
 		batch_timer = Timer()
@@ -202,7 +203,7 @@ class Network_(nn.Module):
 
 		orig_mode = self.training
 		self.eval()
-		for i, (input, target) in enumerate(self.test_loader):
+		for i, (input, target) in enumerate(test_loader):
 
 			if self.gpu:
 				with torch.no_grad():
@@ -292,7 +293,7 @@ class Network_(nn.Module):
 				
 		
 
-			acc_v, loss_v = self.validation()
+			acc_v, loss_v = self.validation(self.test_loader)
 			self.writer.add_scalar(str_ + '/Loss_test', loss_v.avg, self.n_iter)
 			self.writer.add_scalar(str_ + '/Acc_test' , acc_v.avg, self.n_iter)
 

@@ -136,7 +136,7 @@ class Network_(nn.Module):
 		self.optimizer.step()
 		return loss.detach(), out
 
-	def validation(self):
+	def validation(self, test_loader):
         # this might possibly change for other incremental scenario
         # This function doesn't distinguish tasks.
 		batch_timer = Timer()
@@ -148,7 +148,7 @@ class Network_(nn.Module):
 		batch_timer.tic()
 		orig_mode = self.training	
 		self.eval()
-		for i, (input, target) in enumerate(self.test_loader):
+		for i, (input, target) in enumerate(test_loader):
 
 			if self.gpu:
 				print(self.gpu)
@@ -191,37 +191,37 @@ class Network_(nn.Module):
 		return out
 
 
-	def validation(self, test_loader):
-		# this might possibly change for other incremental scenario
-		# This function doesn't distinguish tasks.
-		batch_timer = Timer()
-		acc = AverageMeter()
-		losses = AverageMeter()
-		acc = AverageMeter()
+	# def validation(self, test_loader):
+	# 	# this might possibly change for other incremental scenario
+	# 	# This function doesn't distinguish tasks.
+	# 	batch_timer = Timer()
+	# 	acc = AverageMeter()
+	# 	losses = AverageMeter()
+	# 	acc = AverageMeter()
 
-		batch_timer.tic()
+	# 	batch_timer.tic()
 
-		orig_mode = self.training
-		self.eval()
-		for i, (input, target) in enumerate(test_loader):
+	# 	orig_mode = self.training
+	# 	self.eval()
+	# 	for i, (input, target) in enumerate(test_loader):
 
-			if self.gpu:
-				with torch.no_grad():
-					input = input.cuda()
-					target = target.cuda()
+	# 		if self.gpu:
+	# 			with torch.no_grad():
+	# 				input = input.cuda()
+	# 				target = target.cuda()
 
-					output = self.predict(input)
-					loss = self.criterion(output, target)
-			losses.update(loss, input.size(0))        
-			# Summarize the performance of all tasks, or 1 task, depends on dataloader.
-			# Calculated by total number of data.
-			acc = accumulate_acc(output, target, acc)
+	# 				output = self.predict(input)
+	# 				loss = self.criterion(output, target)
+	# 		losses.update(loss, input.size(0))        
+	# 		# Summarize the performance of all tasks, or 1 task, depends on dataloader.
+	# 		# Calculated by total number of data.
+	# 		acc = accumulate_acc(output, target, acc)
 
-		self.train(orig_mode)
+	# 	self.train(orig_mode)
 
-		self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
-				.format(acc=acc,time=batch_timer.toc()))
-		return acc, losses
+	# 	self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
+	# 			.format(acc=acc,time=batch_timer.toc()))
+	# 	return acc, losses
 
 	def save_model(self, filename):
 		dir_ = os.path.join('models', self.exp_name)

@@ -151,7 +151,6 @@ class Network_(nn.Module):
 		for i, (input, target) in enumerate(test_loader):
 
 			if self.gpu:
-				print(self.gpu)
 				with torch.no_grad():
 					input = input.cuda()
 					target = target.cuda()
@@ -172,6 +171,23 @@ class Network_(nn.Module):
 		acc_cl_1 = {}
 		acc_cl_5 = {}
 		
+		#from accuracies obtained create inst size based accuracies
+		inst_clss_lst = self.train_loader.dataset.class_inst_list
+		# import pdb; pdb.set_trace()
+		for ins_clss_, insts in inst_clss_lst.items():
+			cls_sum = sum([acc_class[inst].sum for inst in insts])
+			cls_cnt = sum([acc_class[inst].count for inst in insts])
+			if cls_cnt == 0:
+				import pdb; pdb.set_trace()
+			inst_avg = cls_sum / cls_cnt
+
+			self.writer.add_scalar(self.str_ + '/Acc_1_{}'.format(ins_clss_), inst_avg, self.n_iter)
+
+			cls_sum_5 = sum([acc_class_5[inst].sum for inst in insts])
+			cls_cnt_5 = sum([acc_class_5[inst].count for inst in insts])
+			inst_avg_5 = cls_sum_5 / cls_cnt_5
+			self.writer.add_scalar(self.str_ + '/Acc_5_{}'.format(ins_clss_), inst_avg_5, self.n_iter)
+
 		# for idx, cl_ in class_list.items():
 		# 	acc_cl_1[cl_] = [acc_class[idx].avg,  acc_class[idx].sum, acc_class[idx].count] 
 		# 	acc_cl_5[cl_] = [acc_class_5[idx].avg,  acc_class_5[idx].sum,  acc_class_5[idx].count]
@@ -190,39 +206,6 @@ class Network_(nn.Module):
 		out = self.forward(inputs)
 		return out
 
-
-	# def validation(self, test_loader):
-	# 	# this might possibly change for other incremental scenario
-	# 	# This function doesn't distinguish tasks.
-	# 	batch_timer = Timer()
-	# 	acc = AverageMeter()
-	# 	losses = AverageMeter()
-	# 	acc = AverageMeter()
-
-	# 	batch_timer.tic()
-
-	# 	orig_mode = self.training
-	# 	self.eval()
-	# 	for i, (input, target) in enumerate(test_loader):
-
-	# 		if self.gpu:
-	# 			with torch.no_grad():
-	# 				input = input.cuda()
-	# 				target = target.cuda()
-
-	# 				output = self.predict(input)
-	# 				loss = self.criterion(output, target)
-	# 		losses.update(loss, input.size(0))        
-	# 		# Summarize the performance of all tasks, or 1 task, depends on dataloader.
-	# 		# Calculated by total number of data.
-	# 		acc = accumulate_acc(output, target, acc)
-
-	# 	self.train(orig_mode)
-
-	# 	self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
-	# 			.format(acc=acc,time=batch_timer.toc()))
-	# 	return acc, losses
-
 	def save_model(self, filename):
 		dir_ = os.path.join('models', self.exp_name)
 		if not os.path.exists(dir_):
@@ -236,11 +219,11 @@ class Network_(nn.Module):
 
 	def train_(self, epochs, finetune=False):
 		str_ = 'pretrain'
+		self.str_ = str_
 		if finetune:
 			self.switch_finetune()
 			str_ = 'finetune'
-		# else:
-		# 	self.switch_to_pretrain()
+			self.str_ = str
 
 
 		for epoch in range(epochs):
@@ -261,7 +244,7 @@ class Network_(nn.Module):
 			
 			data_timer.tic()
 			batch_timer.tic()
-			
+
 			for i, (input, target) in enumerate(self.train_loader):
 				self.model.train()
 				data_time.update(data_timer.toc())  # measure data loading time
@@ -282,7 +265,7 @@ class Network_(nn.Module):
 				self.n_iter = (epoch) * len(self.train_loader)  + i
 				self.writer.add_scalar(str_ + '/Loss_train', losses.avg, self.n_iter)
 				self.writer.add_scalar(str_ + '/Acc_train' , acc.avg, self.n_iter)
-                # if ((self.config['print_freq']>0) and (i % self.config['print_freq'] == 0)) or (i+1)==len(train_loader):
+				# if ((self.config['print_freq']>0) and (i % self.config['print_freq'] == 0)) or (i+1)==len(train_loader):
 				self.log('[{0}/{1}]\t'
 						'{batch_time.val:.4f} ({batch_time.avg:.4f})\t'
 						'{data_time.val:.4f} ({data_time.avg:.4f})\t'

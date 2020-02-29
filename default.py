@@ -162,8 +162,8 @@ class Network_(nn.Module):
 			# Summarize the performance of all tasks, or 1 task, depends on dataloader.
 			# Calculated by total number of data.
 			
-			#t_acc, acc_class = accuracy(output, target, topk=(1,), avg_meters=acc_class) #self.accumulate_acc(output, target, acc)
-			#t_acc_5, acc_class_5 = accuracy(output, target, topk=(5,), avg_meters=acc_class_5)
+			t_acc, acc_class = accuracy(output, target, topk=(1,), avg_meters=acc_class) #self.accumulate_acc(output, target, acc)
+			t_acc_5, acc_class_5 = accuracy(output, target, topk=(5,), avg_meters=acc_class_5)
 			# import pdb; pdb.set_trace()
 			acc.update(t_acc, len(target))
 			acc_5.update(t_acc_5, len(target))

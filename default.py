@@ -189,6 +189,7 @@ class Network_(nn.Module):
 		out = self.forward(inputs)
 		return out
 
+
 	def validation(self):
 		# this might possibly change for other incremental scenario
 		# This function doesn't distinguish tasks.
@@ -201,7 +202,7 @@ class Network_(nn.Module):
 
 		orig_mode = self.training
 		self.eval()
-		for i, (input, target, task) in enumerate(self.test_loader):
+		for i, (input, target) in enumerate(self.test_loader):
 
 			if self.gpu:
 				with torch.no_grad():
@@ -213,7 +214,7 @@ class Network_(nn.Module):
 			losses.update(loss, input.size(0))        
 			# Summarize the performance of all tasks, or 1 task, depends on dataloader.
 			# Calculated by total number of data.
-			acc = accumulate_acc(output, target, task, acc)
+			acc = accumulate_acc(output, target, acc)
 
 		self.train(orig_mode)
 
@@ -304,3 +305,7 @@ class Network_(nn.Module):
 
 
 
+def accumulate_acc(output, target,meter):
+# Single-headed model
+    meter.update(accuracy(output, target), len(target))
+    return meter

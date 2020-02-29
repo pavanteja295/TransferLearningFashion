@@ -184,7 +184,7 @@ class Network_(nn.Module):
 	# 			.format(acc=acc,time=batch_timer.toc()))
 	# 	return acc, losses
 
-    def validation(self, dataloader, task_n=''):
+    def validation(self):
         # this might possibly change for other incremental scenario
         # This function doesn't distinguish tasks.
         batch_timer = Timer()
@@ -196,7 +196,7 @@ class Network_(nn.Module):
 
         orig_mode = self.training
         self.eval()
-        for i, (input, target, task) in enumerate(dataloader):
+        for i, (input, target, task) in enumerate(self.test_loader):
 
             if self.gpu:
                 with torch.no_grad():
@@ -215,7 +215,7 @@ class Network_(nn.Module):
         self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
               .format(acc=acc,time=batch_timer.toc()))
         return acc, losses
-		
+
 	def save_model(self, filename):
 		dir_ = os.path.join('models', self.exp_name)
 		if not os.path.exists(dir_):

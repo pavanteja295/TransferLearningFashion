@@ -21,7 +21,7 @@ from bidict import bidict
 #sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True) for CIFAR 10
 def main():
     parser = argparse.ArgumentParser(description='Fashion Dataset')
-    parser.add_argument('--dataset', dest='dataset', default='fashion-dataset-small', type=str,
+    parser.add_argument('--dataset', dest='dataset', default='fashion-dataset', type=str,
                         help=" select among fashion-dataset / fashion-dataset_small")
     parser.add_argument('--loss', dest='loss', default='cse', type=str,
                         help="Focal / Cross Entropy")
@@ -65,15 +65,18 @@ def main():
                         help="Exp name to be added to the suffix")    # give resnets layer
     parser.add_argument('--gamma', dest='gamma', default=0.2, type=float,
                         help="Lr drop")    # give resnets layer
+    parser.add_argument('--resize', nargs="+", type=int, default=[224, 224, 2],
+                        help="resize images")    # give resnets layer
+
     args = parser.parse_args()
     debug = args.debug
 
     datasets_ = {}
     if args.dataset != 'CIFAR100':
-        datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug)
-        datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug)
-        datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug)
-        datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug)
+        datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug, resize=args.resize)
+        datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug, resize=args.resize)
+        datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
+        datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
     else:
         dataroot = './data'
         normalize = transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])

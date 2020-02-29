@@ -225,7 +225,6 @@ class Network_(nn.Module):
 			str_ = 'finetune'
 			self.str_ = str
 
-
 		for epoch in range(epochs):
 
 			data_timer = Timer()

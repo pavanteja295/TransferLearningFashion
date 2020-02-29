@@ -209,8 +209,8 @@ class Network_(nn.Module):
 					input = input.cuda()
 					target = target.cuda()
 
-			output = self.predict(input)
-			loss = self.criterion(output, target)
+					output = self.predict(input)
+					loss = self.criterion(output, target)
 			losses.update(loss, input.size(0))        
 			# Summarize the performance of all tasks, or 1 task, depends on dataloader.
 			# Calculated by total number of data.

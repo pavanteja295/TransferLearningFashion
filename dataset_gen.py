@@ -58,7 +58,8 @@ class Fashion_Dataset(Dataset):
                                                                 torchvision.transforms.RandomHorizontalFlip(), 
                                                                 crop_select,
                                                                 torchvision.transforms.ToTensor(),
-                                                                torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+                                                                torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                                                                ]) # 
             else:
                 self.transforms = torchvision.transforms.Compose([
                                                                 torchvision.transforms.CenterCrop(self.resize),
@@ -72,9 +73,12 @@ class Fashion_Dataset(Dataset):
         img = Image.open(img_p).convert('RGB')
         img = pad_(self.resize[0], self.resize[1],  img)  #totensor already normalizes
         gt_ = self.data['class'][idx]
-
+        
         # apply augmentations
         img_t = self.transforms( img)
+        # pil_t = torchvision.transforms.ToPILImage()
+        # img_tmp = pil_t(img_t)
+        # img_tmp.save(str(idx) , 'JPEG')
         return img_t, gt_
 
     def __len__(self):

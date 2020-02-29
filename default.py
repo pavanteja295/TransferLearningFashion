@@ -184,37 +184,42 @@ class Network_(nn.Module):
 	# 			.format(acc=acc,time=batch_timer.toc()))
 	# 	return acc, losses
 
-    def validation(self):
-        # this might possibly change for other incremental scenario
-        # This function doesn't distinguish tasks.
-        batch_timer = Timer()
-        acc = AverageMeter()
-        losses = AverageMeter()
-        acc = AverageMeter()
+	def predict(self, inputs):
+		self.model.eval()
+		out = self.forward(inputs)
+		return out
 
-        batch_timer.tic()
+	def validation(self):
+		# this might possibly change for other incremental scenario
+		# This function doesn't distinguish tasks.
+		batch_timer = Timer()
+		acc = AverageMeter()
+		losses = AverageMeter()
+		acc = AverageMeter()
 
-        orig_mode = self.training
-        self.eval()
-        for i, (input, target, task) in enumerate(self.test_loader):
+		batch_timer.tic()
 
-            if self.gpu:
-                with torch.no_grad():
-                    input = input.cuda()
-                    target = target.cuda()
+		orig_mode = self.training
+		self.eval()
+		for i, (input, target, task) in enumerate(self.test_loader):
 
-            output = self.predict(input, task_n)
-            loss = self.criterion(output, target, task)
-            losses.update(loss, input.size(0))        
-            # Summarize the performance of all tasks, or 1 task, depends on dataloader.
-            # Calculated by total number of data.
-            acc = accumulate_acc(output, target, task, acc)
+			if self.gpu:
+				with torch.no_grad():
+					input = input.cuda()
+					target = target.cuda()
 
-        self.train(orig_mode)
+			output = self.predict(input)
+			loss = self.criterion(output)
+			losses.update(loss, input.size(0))        
+			# Summarize the performance of all tasks, or 1 task, depends on dataloader.
+			# Calculated by total number of data.
+			acc = accumulate_acc(output, target, task, acc)
 
-        self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
-              .format(acc=acc,time=batch_timer.toc()))
-        return acc, losses
+		self.train(orig_mode)
+
+		self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
+				.format(acc=acc,time=batch_timer.toc()))
+		return acc, losses
 
 	def save_model(self, filename):
 		dir_ = os.path.join('models', self.exp_name)

@@ -1,0 +1,17 @@
+# HTTP Cookie File downloaded with cookies.txt by Genuinous @genuinous
+# This file can be used by wget, curl, aria2c and other standard compliant tools.
+# Usage Examples:
+#   1) wget -x --load-cookies cookies.txt "https://www.kaggle.com/paramaggarwal/fashion-product-images-dataset/data#"
+#   2) curl --cookie cookies.txt "https://www.kaggle.com/paramaggarwal/fashion-product-images-dataset/data#"
+#   3) aria2c --load-cookies cookies.txt "https://www.kaggle.com/paramaggarwal/fashion-product-images-dataset/data#"
+#
+.kaggle.com	TRUE	/	FALSE	1646025499	_ga	GA1.2.416841305.1582096021
+www.kaggle.com	FALSE	/	FALSE	1597855391	ka_sessionid	dd8ed160572d583c18d5282c2fc2e4f403a24cc3
+.kaggle.com	TRUE	/	FALSE	1583039899	_gid	GA1.2.675146019.1582949700
+.kaggle.com	TRUE	/	FALSE	1583555306	intercom-session-koj6gxx6	Wm1lN1ZUbmg3VUtuWTVvVWRjUStmaXhyZHBjUWdJZm1iUExuRG40QkxPOVJvT2NPQXlyYm80cXBvemZFMFJRbS0tNUFDOEdMZnpNUEFqZGdaZ2xxUDJIUT09--51efa1464ea357a37324ab8763508e945d27610f
+www.kaggle.com	FALSE	/	TRUE	0	CSRF-TOKEN	CfDJ8LdUzqlsSWBPr4Ce3rb9VL-4vstWPZMhANvnq67AUbZGkYMHx9w1fMCoawIFuHOavqfS_WsBiEp7aqgQtOwkraSAJAS3IZfl4EzxyEaWPUiiwDO03NYX2BXWjVbFChim_HEZ4rlNdLLFCoj0Ld6lPKs
+www.kaggle.com	FALSE	/	FALSE	0	GCLB	CNy467zF9YLzLA
+.kaggle.com	TRUE	/	FALSE	1582953548	_gat_gtag_UA_12629138_1	1
+www.kaggle.com	FALSE	/	TRUE	1585545498	.ASPXAUTH	C66A089CE8B38EB87EE734C46925F643A14036B6DE49F2288F3BA6916E96D258E649AC0E97DF49F49D66455846183BE153DFCF6742A370926C3847C8453E54F494C9703B8590F6177552BF313420AA12DA6A7C96
+www.kaggle.com	FALSE	/	TRUE	0	XSRF-TOKEN	CfDJ8LdUzqlsSWBPr4Ce3rb9VL_WLYprhdo5r-9OxnKWuiqm2sti69KZb-B4L3P8mOcpewww5QYEw6isSzO9fK0EIyaRr6JEQu6izuDQ4jkVYD41eX6a0ZoSohGeyfwJZOAPLx_Vy5yani3oCjA-ClLdxqfLqPRDT61r3oVvTxSBc3WcnruaO76n_yth-_3TMxdmnQ
+www.kaggle.com	FALSE	/	FALSE	0	.AspNetCore.Mvc.CookieTempDataProvider	CfDJ8LdUzqlsSWBPr4Ce3rb9VL-5rhT4R_xEPSKyoSOkAdX8Zm7OtHTYs42O7X-YxrFvPj9cyIdFm_H3VfW98VYKUAc4MnYw1s0BemY62JsnrivhG4rqZEGB3BNaPpjWDt2o70BvwA4Zt_ysbiEnwQJYvyw

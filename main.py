@@ -155,7 +155,7 @@ def main():
                 wts = 1 / torch.Tensor(wts)
                 wts = wts.double()
 
-                sampler = torch.utils.data.WeightedRandomSampler(wts, args.batch_size)
+                sampler = torch.utils.data.WeightedRandomSampler(wts, wts.size(0))
                 dataloaders_[key] = DataLoader(datasets_[key], batch_size=args.batch_size, 
                                     sampler=sampler, num_workers=args.num_workers)
             else:

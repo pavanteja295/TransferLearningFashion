@@ -106,11 +106,17 @@ class Network_(nn.Module):
 
 		# Freeze training for all "features" layers
 		if self.config['finetune_freeze']:
-			for param in self.model.parameters():
-				param.requires_grad = False
+			for name, param in self.model.named_parameters():
+				if 'layer4.' in name or 'fc.' in name:
+					print(name)
+					param.requires_grad = True
+				else:
+					param.requires_grad = False
+
 		else:
 			for param in self.model.parameters():
 				param.requires_grad = True
+
 		
 		print('FINETUNING number of classes are ', len(self.train_loader.dataset.class_list))
 		n_inp = self.model.fc.in_features

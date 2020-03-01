@@ -108,7 +108,9 @@ class Network_(nn.Module):
 		if self.config['finetune_freeze'] != 'None':
 			for param in self.model.parameters():
 				param.requires_grad = False
-
+		else:
+			for param in self.model.parameters():
+				param.requires_grad = True
 		
 		print('FINETUNING number of classes are ', len(self.train_loader.dataset.class_list))
 		n_inp = self.model.fc.in_features

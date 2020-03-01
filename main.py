@@ -76,10 +76,11 @@ def main():
 
     datasets_ = {}
     if args.dataset != 'CIFAR100':
-        datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug, resize=args.resize)
-        datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug, resize=args.resize)
-        datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
-        datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
+        # change pt to ft
+        datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug, resize=args.resize)
+        datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug, resize=args.resize)
+        datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
+        datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
     else:
         dataroot = './data'
         normalize = transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
@@ -187,10 +188,10 @@ def main():
     if not args.model_weights:
     # pre train 
         net.train_(args.epochs)
-    else:
-        print('------------------SKIPPING THE PRETRAN---------------')
+    # else:
+    #     print('------------------SKIPPING THE PRETRAN---------------')
     # fine tune
-    net.train_(args.epochs, finetune=True)
+    #net.train_(args.epochs, finetune=True)
 
 def check_data(data_loader, num, str_):
     import matplotlib.pyplot as plt

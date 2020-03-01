@@ -246,10 +246,10 @@ class Network_(nn.Module):
 			self.scheduler.step(epoch)
 			if self.config['train_between']:
 				if epoch == self.config['schedule'][0]:
-					for param self.model.parameters():
+					for param in self.model.parameters():
 						param.requires_grad = True
-						self.config['lr'] = 0.001
-						self.init_optimizer()
+					self.config['lr'] = 0.001
+					self.init_optimizer()
 					
 					
 

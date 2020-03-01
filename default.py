@@ -68,7 +68,7 @@ class Network_(nn.Module):
 			model = models.__dict__[self.config['model_name']](pretrained=self.config['pretrain_in'])
 
 		# Freeze training for all "features" layers
-		if self.config['freeze'] != 'None':
+		if self.config['freeze']:
 			for param in model.parameters():
 				param.requires_grad = False
 
@@ -105,7 +105,7 @@ class Network_(nn.Module):
 
 
 		# Freeze training for all "features" layers
-		if self.config['finetune_freeze'] != 'None':
+		if self.config['finetune_freeze']:
 			for param in self.model.parameters():
 				param.requires_grad = False
 		else:

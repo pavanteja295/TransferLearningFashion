@@ -62,9 +62,9 @@ def main():
                         help='epochs to save model after')
     parser.add_argument('--dir_', dest='dir_', default='/h,', type=str,
                         help="Exp name to be added to the suffix")
-    parser.add_argument('--freeze', dest='freeze', default='fc', type=str,
+    parser.add_argument('--freeze', dest='freeze',  default=False, action='store_true',
                         help="Freeze the pretrain model")    # give resnets layer
-    parser.add_argument('--finetune_freeze', dest='finetune_freeze', default='fc', type=str,
+    parser.add_argument('--finetune_freeze', dest='finetune_freeze', default=False, action='store_true',
                         help="Freeze the finetune model") 
     parser.add_argument('--gamma', dest='gamma', default=0.2, type=float,
                         help="Lr drop")    # give resnets layer
@@ -190,7 +190,6 @@ def main():
         net.train_(args.epochs)
     else:
         print('------------------SKIPPING THE PRETRAN---------------')
-    fine tune
     net.train_(args.epochs, finetune=True)
 
 def check_data(data_loader, num, str_):

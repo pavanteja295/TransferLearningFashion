@@ -151,11 +151,15 @@ def main():
         else:
             sampler = None
             if args.add_sampler:
+                # these are weights for the classes
                 wts = [ val for keu, val in datasets_[key].class_count.items()]
                 wts = 1 / torch.Tensor(wts)
                 wts = wts.double()
 
-                sampler = torch.utils.data.WeightedRandomSampler(wts, wts.size(0))
+                # weights for the samples
+                sample_wts = [wts[t] for t in datasets_[key].data['class']]
+
+                sampler = torch.utils.data.WeightedRandomSampler(sample_wts, len(sample_wts))
                 dataloaders_[key] = DataLoader(datasets_[key], batch_size=args.batch_size, 
                                     sampler=sampler, num_workers=args.num_workers)
             else:

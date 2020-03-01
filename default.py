@@ -105,7 +105,7 @@ class Network_(nn.Module):
 
 
 		# Freeze training for all "features" layers
-		if self.config['freeze'] != 'None':
+		if self.config['finetune_freeze'] != 'None':
 			for param in self.model.parameters():
 				param.requires_grad = False
 
@@ -114,7 +114,7 @@ class Network_(nn.Module):
 		n_inp = self.model.fc.in_features
 		self.model.fc = nn.Linear(n_inp, len(self.train_loader.dataset.class_list))
 
-		self.config['lr'] = 0.001
+		self.config['lr'] = self.config['finetune_lr']
 		self.init_optimizer()
 		self.cuda()
 

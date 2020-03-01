@@ -41,6 +41,7 @@ def main():
                         help="epochs one for pretrain one for finetune")
 
     parser.add_argument('--lr', type=float, default=0.001, help="Learning rate")
+    parser.add_argument('--finetune_lr', type=float, default=0.001, help="Learning rate")
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight_decay', type=float, default=0)
     parser.add_argument('--schedule', nargs="+", type=int, default=[60, 80, 120],)
@@ -62,7 +63,9 @@ def main():
     parser.add_argument('--dir_', dest='dir_', default='/h,', type=str,
                         help="Exp name to be added to the suffix")
     parser.add_argument('--freeze', dest='freeze', default='fc', type=str,
-                        help="Exp name to be added to the suffix")    # give resnets layer
+                        help="Freeze the pretrain model")    # give resnets layer
+    parser.add_argument('--finetune_freeze', dest='finetune_freeze', default='fc', type=str,
+                        help="Freeze the finetune model") 
     parser.add_argument('--gamma', dest='gamma', default=0.2, type=float,
                         help="Lr drop")    # give resnets layer
     parser.add_argument('--resize', nargs="+", type=int, default=[224, 224, 2],

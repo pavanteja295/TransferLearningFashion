@@ -244,6 +244,16 @@ class Network_(nn.Module):
 			acc = AverageMeter()
 			self.model.train()
 			self.scheduler.step(epoch)
+			if self.config['train_between']:
+				if epoch == self.config['schedule'][0]:
+					for param self.model.parameters():
+						param.requires_grad = True
+						self.config['lr'] = 0.001
+						self.init_optimizer()
+					
+					
+
+
 			for param_group in self.optimizer.param_groups:
 				self.log('LR:',param_group['lr'])
 

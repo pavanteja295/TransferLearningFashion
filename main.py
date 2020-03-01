@@ -70,7 +70,9 @@ def main():
                         help="Lr drop")    # give resnets layer
     parser.add_argument('--resize', nargs="+", type=int, default=[224, 224, 2],
                         help="resize images")    # give resnets layer
-
+                        
+    parser.add_argument('--train_between', dest='train_between', default=False, action='store_true',
+                        help="train between") 
     args = parser.parse_args()
     debug = args.debug
 
@@ -177,7 +179,7 @@ def main():
                'gpuid': args.gpuid, 'lr': args.lr, 'momentum': args.momentum, 'weight_decay': args.weight_decay,'schedule': args.schedule,
                'optimizer':args.optimizer,  'exp_name' : args.exp_name, 'nesterov':args.nesterov, 'model_name': args.model_name, 'pretrain_in':args.pretrain_in,
                'model_weights':args.model_weights, 'loss': args.loss, 'save_after':args.save_after, 'freeze': args.freeze, 'gamma' :args.gamma, 'debug':args.debug, 'finetune_lr':args.finetune_lr,
-               'finetune_freeze':args.finetune_freeze }      
+               'finetune_freeze':args.finetune_freeze, 'train_between' : args.train_between }      
      
     if debug:
         for key, val in dataloaders_.items():

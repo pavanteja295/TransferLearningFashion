@@ -175,6 +175,8 @@ def main():
     if not args.model_weights:
     # pre train 
         net.train_(args.epochs)
+    else:
+        print('------------------SKIPPING THE PRETRAN---------------')
     # fine tune
     net.train_(args.epochs, finetune=True)
 

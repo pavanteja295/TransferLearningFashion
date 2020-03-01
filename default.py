@@ -105,8 +105,9 @@ class Network_(nn.Module):
 
 
 		# Freeze training for all "features" layers
-		for param in self.model.parameters():
-			param.requires_grad = False
+		if self.config['freeze'] != 'None':
+			for param in self.model.parameters():
+				param.requires_grad = False
 
 		
 		print('FINETUNING number of classes are ', len(self.train_loader.dataset.class_list))
@@ -223,7 +224,7 @@ class Network_(nn.Module):
 		if finetune:
 			self.switch_finetune()
 			str_ = 'finetune'
-			self.str_ = str
+			self.str_ = str_
 
 		for epoch in range(epochs):
 

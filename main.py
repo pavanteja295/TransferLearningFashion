@@ -187,7 +187,7 @@ def main():
     
 
     net = Network_(config)
-    if not args.model_weights:
+    if not args.model_weights and not args.only_finetune:
     # pre train 
         net.train_(args.epochs)
     else:

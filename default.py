@@ -76,8 +76,8 @@ class Network_(nn.Module):
 		model.fc = nn.Linear(n_inp, len(self.train_loader.dataset.class_list))
 		# Load pre-trained weights
 		if self.config['model_weights'] is not None:
-			print('=> Load model weights:', self.cfg['model_weights'])
-			model_state = torch.load(self.cfg['model_weights'],
+			print('=> Load model weights:', self.config['model_weights'])
+			model_state = torch.load(self.config['model_weights'],
 										map_location=lambda storage, loc: storage)  # Load to CPU.
 			model.load_state_dict(model_state)
 			print('=> Load Done')

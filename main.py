@@ -52,7 +52,7 @@ def main():
     parser.add_argument('--nesterov',  default=False, action='store_true', help='nesterov up training phase')
     parser.add_argument('--exp_name', dest='exp_name', default='default', type=str,
                         help="Exp name to be added to the suffix")
-    parser.add_argument('--add_sampler', default=False, action='store_true',
+    parser.add_argument('--add_sampler', type=int, default=0,
                         help="Sampling for imbalance data")
     parser.add_argument('--num_workers', dest='num_workers', default=1, type=int,
                         help="Num data workers")
@@ -152,9 +152,13 @@ def main():
             sampler = None
             if args.add_sampler:
                 # these are weights for the classes
-                wts = [ val for keu, val in datasets_[key].class_count.items()]
-                wts = 1 / torch.Tensor(wts)
-                wts = wts.double()
+                if args.add_sampler == 1:
+                    dict_samp = datasets_[key].class_count
+                elif args.add_sampler == 2:
+                    dict_samp = datasets_[key].class_count_test
+                wts = [ val for keu, val in dict_samp.items()]
+                wts = [1 / wt if wt else 0 for wt in wts ]
+                wts = torch.FloatTensor(wts)
 
                 # weights for the samples
                 sample_wts = [wts[t] for t in datasets_[key].data['class']]

@@ -40,6 +40,7 @@ class Fashion_Dataset(Dataset):
         self.data = data_[ft_pt][split]
         self.class_list =  bidict(data_[ft_pt]['class_list'])
         self.class_count = data_[ft_pt]['total_class_count']
+        self.class_count_test = data_[ft_pt]['test']['total_class_count']
         self.class_inst_list = data_[ft_pt]['class_inst']
         self.resize = tuple(resize[:2])
 

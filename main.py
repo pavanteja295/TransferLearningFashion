@@ -75,6 +75,9 @@ def main():
                         help="train between") 
     parser.add_argument('--freeze_layers', nargs="+", type=str, default=['fc.'],
                         help="which layers to freeze")
+    parser.add_argument('--switch_all', type=int, default=0,
+                        help="when to switch to all")
+
 
     args = parser.parse_args()
     debug = args.debug
@@ -183,7 +186,7 @@ def main():
                'gpuid': args.gpuid, 'lr': args.lr, 'momentum': args.momentum, 'weight_decay': args.weight_decay,'schedule': args.schedule,
                'optimizer':args.optimizer,  'exp_name' : args.exp_name, 'nesterov':args.nesterov, 'model_name': args.model_name, 'pretrain_in':args.pretrain_in,
                'model_weights':args.model_weights, 'loss': args.loss, 'save_after':args.save_after, 'freeze': args.freeze, 'gamma' :args.gamma, 'debug':args.debug, 'finetune_lr':args.finetune_lr,
-               'finetune_freeze':args.finetune_freeze, 'train_between' : args.train_between, 'freeze_layers': args.freeze_layers }      
+               'finetune_freeze':args.finetune_freeze, 'train_between' : args.train_between, 'freeze_layers': args.freeze_layers, 'switch_all':args.switch_all }      
      
     if debug:
         for key, val in dataloaders_.items():

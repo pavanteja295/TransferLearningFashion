@@ -56,6 +56,7 @@ class Fashion_Dataset(Dataset):
                 
  
                 self.transforms = torchvision.transforms.Compose([torchvision.transforms.ColorJitter(brightness=0.4, saturation=0.4, hue=0.4), 
+                                                                torchvision.transforms.RandomRotation(15), 
                                                                 torchvision.transforms.RandomHorizontalFlip(), 
                                                                 crop_select,
                                                                 torchvision.transforms.ToTensor(),

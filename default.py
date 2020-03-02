@@ -106,7 +106,7 @@ class Network_(nn.Module):
 
 		# Freeze training for all "features" layers
 		if self.config['finetune_freeze']:
-			
+
 			for name, param in self.model.named_parameters():
 				if any(substring in name for substring in self.config['freeze_layers']):
 					print(name)
@@ -249,7 +249,8 @@ class Network_(nn.Module):
 				if epoch == self.config['schedule'][0]:
 					for param in self.model.parameters():
 						param.requires_grad = True
-					self.config['lr'] = 0.001
+					self.config['lr'] = 0.01
+					self.config['weight_decay'] = 5e-5
 					self.init_optimizer()
 					
 					

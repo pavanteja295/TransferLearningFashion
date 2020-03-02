@@ -250,10 +250,15 @@ class Network_(nn.Module):
 					for param in self.model.parameters():
 						param.requires_grad = True
 					#self.config['lr'] = 0.01
-					self.config['weight_decay'] = 5e-5
+					self.config['weight_decay'] = 0
 					self.init_optimizer()
-					
-					
+				if epoch == 40:
+					self.config['weight_decay'] = 5e-4
+					for param in self.model.parameters():
+						param.requires_grad = True
+					self.init_optimizer()
+					#self.config['lr'] = 0.01
+
 
 
 			for param_group in self.optimizer.param_groups:

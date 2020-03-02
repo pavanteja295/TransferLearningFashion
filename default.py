@@ -249,7 +249,7 @@ class Network_(nn.Module):
 				if epoch == self.config['schedule'][0]:
 					for param in self.model.parameters():
 						param.requires_grad = True
-					self.config['lr'] = 0.01
+					#self.config['lr'] = 0.01
 					self.config['weight_decay'] = 5e-5
 					self.init_optimizer()
 					

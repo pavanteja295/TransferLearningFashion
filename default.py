@@ -106,8 +106,9 @@ class Network_(nn.Module):
 
 		# Freeze training for all "features" layers
 		if self.config['finetune_freeze']:
+			
 			for name, param in self.model.named_parameters():
-				if 'layer4.' in name or 'fc.' in name:
+				if any(substring in name for substring in self.config['freeze_layers']):
 					print(name)
 					param.requires_grad = True
 				else:

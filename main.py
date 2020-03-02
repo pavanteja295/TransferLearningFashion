@@ -73,9 +73,13 @@ def main():
                         
     parser.add_argument('--train_between', dest='train_between', default=False, action='store_true',
                         help="train between") 
+    parser.add_argument('--freeze_layers', nargs="+", type=str, default=['fc.'],
+                        help="which layers to freeze")
+
     args = parser.parse_args()
     debug = args.debug
 
+    print(args.freeze_layers)
     datasets_ = {}
     if args.dataset != 'CIFAR100':
         # change pt to ft
@@ -179,7 +183,7 @@ def main():
                'gpuid': args.gpuid, 'lr': args.lr, 'momentum': args.momentum, 'weight_decay': args.weight_decay,'schedule': args.schedule,
                'optimizer':args.optimizer,  'exp_name' : args.exp_name, 'nesterov':args.nesterov, 'model_name': args.model_name, 'pretrain_in':args.pretrain_in,
                'model_weights':args.model_weights, 'loss': args.loss, 'save_after':args.save_after, 'freeze': args.freeze, 'gamma' :args.gamma, 'debug':args.debug, 'finetune_lr':args.finetune_lr,
-               'finetune_freeze':args.finetune_freeze, 'train_between' : args.train_between }      
+               'finetune_freeze':args.finetune_freeze, 'train_between' : args.train_between, 'freeze_layers': args.freeze_layers }      
      
     if debug:
         for key, val in dataloaders_.items():

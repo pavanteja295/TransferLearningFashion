@@ -37,6 +37,7 @@ class Network_(nn.Module):
 		
 		self.exp_name = agent_config['exp_name']
 		self.init_optimizer()
+		self.n_iter = 0
 
 		self.writer = SummaryWriter(log_dir="runs/" + self.exp_name)
 		self.save_after = self.config['save_after']
@@ -233,6 +234,9 @@ class Network_(nn.Module):
 	def train_(self, epochs, finetune=False):
 		str_ = 'pretrain'
 		self.str_ = str_
+		
+
+
 		if finetune:
 			self.switch_finetune()
 			str_ = 'finetune'

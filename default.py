@@ -146,7 +146,7 @@ class Network_(nn.Module):
 		self.optimizer.step()
 		return loss.detach(), out
 
-	def validation(self, test_loader):
+	def validation(self, test_loader, def_=1):
         # this might possibly change for other incremental scenario
         # This function doesn't distinguish tasks.
 		batch_timer = Timer()
@@ -198,18 +198,21 @@ class Network_(nn.Module):
 			inst_avg_5 = cls_sum_5 / cls_cnt_5
 			self.writer.add_scalar(self.str_ + '/Acc_5_{}'.format(ins_clss_), inst_avg_5, self.n_iter)
 
-		# for idx, cl_ in class_list.items():
-		# 	acc_cl_1[cl_] = [acc_class[idx].avg,  acc_class[idx].sum, acc_class[idx].count] 
-		# 	acc_cl_5[cl_] = [acc_class_5[idx].avg,  acc_class_5[idx].sum,  acc_class_5[idx].count]
-		# 	self.log(' * Val Acc {acc.avg:.3f} for class {cls}, {acc.sum} / {acc.count} '
-		# 		.format(acc=acc_class[idx], cls=cl_))
+		for idx, cl_ in class_list.items():
+			acc_cl_1[cl_] = [acc_class[idx].avg,  acc_class[idx].sum, acc_class[idx].count] 
+			acc_cl_5[cl_] = [acc_class_5[idx].avg,  acc_class_5[idx].sum,  acc_class_5[idx].count]
+			# self.log(' * Val Acc {acc.avg:.3f} for class {cls}, {acc.sum} / {acc.count} '
+			# 	.format(acc=acc_class[idx], cls=cl_))
 		
 
 		self.train(orig_mode)
 
 		self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
 				.format(acc=acc,time=batch_timer.toc()))
-		return acc, losses
+		if def_:
+			return acc, losses
+		else:
+			return acc, acc_5, acc_cl_1, acc_cl_5, losses 
 
 	def predict(self, inputs):
 		self.model.eval()

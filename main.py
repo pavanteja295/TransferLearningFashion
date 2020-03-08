@@ -77,7 +77,8 @@ def main():
                         help="which layers to freeze")
     parser.add_argument('--switch_all', type=int, default=0,
                         help="when to switch to all")
-
+    parser.add_argument('--test',  dest='test', default='pretrain_test', type=str,
+                        help="when to switch to all")
 
     args = parser.parse_args()
     debug = args.debug
@@ -192,14 +193,20 @@ def main():
         for key, val in dataloaders_.items():
             check_data(val, args.batch_size, key)
     
-
     net = Network_(config)
     if not args.model_weights and not args.only_finetune:
     # pre train 
         net.train_(args.epochs)
     else:
         print('------------------SKIPPING THE PRETRAN---------------')
-    net.train_(args.epochs, finetune=True)
+    if args.test == 'finetune_test':
+        net.switch_finetune()
+        acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader)
+    elif args.test == 'pretrain_test':
+        import pdb; pdb.set_trace()
+        acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader)
+    else:
+        net.train_(args.epochs, finetune=True)
 
 def check_data(data_loader, num, str_):
     import matplotlib.pyplot as plt

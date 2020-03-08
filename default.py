@@ -121,8 +121,8 @@ class Network_(nn.Module):
 
 		
 		print('FINETUNING number of classes are ', len(self.train_loader.dataset.class_list))
-		n_inp = self.model.fc.in_features
-		self.model.fc = nn.Linear(n_inp, len(self.train_loader.dataset.class_list))
+		#n_inp = self.model.fc.in_features
+		#self.model.fc = nn.Linear(n_inp, len(self.train_loader.dataset.class_list))
 
 		self.config['lr'] = self.config['finetune_lr']
 		self.init_optimizer()

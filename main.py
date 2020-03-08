@@ -201,10 +201,10 @@ def main():
         print('------------------SKIPPING THE PRETRAN---------------')
     if args.test == 'finetune_test':
         net.switch_finetune()
-        acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader)
+        acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)
     elif args.test == 'pretrain_test':
         import pdb; pdb.set_trace()
-        acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader)
+        acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)
     else:
         net.train_(args.epochs, finetune=True)
 

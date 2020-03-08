@@ -200,9 +200,11 @@ def main():
     else:
         print('------------------SKIPPING THE PRETRAN---------------')
     if args.test == 'finetune_test':
+        net.str_ = 'finetune'
         net.switch_finetune()
         acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)
     elif args.test == 'pretrain_test':
+        net.str_ = 'pretrain'
         import pdb; pdb.set_trace()
         acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)
     else:

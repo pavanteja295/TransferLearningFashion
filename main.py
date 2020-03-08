@@ -205,10 +205,19 @@ def main():
         acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)
     elif args.test == 'pretrain_test':
         net.str_ = 'pretrain'
-        import pdb; pdb.set_trace()
         acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)
+
     else:
         net.train_(args.epochs, finetune=True)
+
+    dict_json = {'acc_1': acc.avg, 'acc_5': acc_5.avg, 'acc_cl_1' : acc_cl_1, 'acc_cl_5':acc_cl_5 }
+    print(dict_json)
+    import json
+    str_p = args.model_weights[:args.model_weights.rfind('/')]
+    str_name = str_p[str_p.rfind('/')+1:]
+    with open(f'{str_name}_result.json', 'w') as fp:
+        json.dump(dict_json, fp)
+    
 
 def check_data(data_loader, num, str_):
     import matplotlib.pyplot as plt

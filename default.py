@@ -75,14 +75,17 @@ class Network_(nn.Module):
 
 		n_inp = model.fc.in_features
 		model.fc = nn.Linear(n_inp, len(self.train_loader.dataset.class_list))
-		# Load pre-trained weights
+		return model
+
+	# Load pre-trained weights
+	def load_model(self)
 		if self.config['model_weights'] is not None:
 			print('=> Load model weights:', self.config['model_weights'])
 			model_state = torch.load(self.config['model_weights'],
 										map_location=lambda storage, loc: storage)  # Load to CPU.
-			model.load_state_dict(model_state)
+			self.model.load_state_dict(model_state)
 			print('=> Load Done')
-		return model
+		return self.model
 	
 	def criterion(self, preds, targets):
 		loss = self.criterion_fn(preds, targets)
@@ -147,7 +150,7 @@ class Network_(nn.Module):
 		self.optimizer.step()
 		return loss.detach(), out
 
-	def validation(self, test_loader, def_=1):
+	def validation(self, test_loader, from_train=1):
         # this might possibly change for other incremental scenario
         # This function doesn't distinguish tasks.
 		batch_timer = Timer()
@@ -210,7 +213,7 @@ class Network_(nn.Module):
 
 		self.log(' * Val Acc {acc.avg:.3f}, Total time {time:.2f}'
 				.format(acc=acc,time=batch_timer.toc()))
-		if def_:
+		if from_train:
 			return acc, losses
 		else:
 			return acc, acc_5, acc_cl_1, acc_cl_5, losses 

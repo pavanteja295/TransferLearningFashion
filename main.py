@@ -18,7 +18,7 @@ import torchvision
 from torchvision import transforms
 from bidict import bidict
 
-#sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True) for CIFAR 10
+
 def main():
     parser = argparse.ArgumentParser(description='Fashion Dataset')
     parser.add_argument('--dataset', dest='dataset', default='fashion-dataset', type=str,
@@ -85,103 +85,41 @@ def main():
 
     print(args.freeze_layers)
     datasets_ = {}
-    if args.dataset != 'CIFAR100':
-        # change pt to ft
-        datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug, resize=args.resize)
-        datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug, resize=args.resize)
-        datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
-        datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
-    else:
-        dataroot = './data'
-        normalize = transforms.Normalize(mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
 
-        val_transform = transforms.Compose([
-            transforms.ToTensor(),
-            normalize,
-        ])
-        train_transform = val_transform
-        
-
-        train_transform = transforms.Compose([
-            transforms.RandomCrop(32, padding=4),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomRotation(15),
-            transforms.ToTensor(),
-            normalize,
-        ])
-        
-        datasets_['train_pt'] = torchvision.datasets.CIFAR100(
-            root=dataroot,
-            train=True,
-            download=True,
-            transform=train_transform
-        )
-
-        datasets_['train_ft'] = torchvision.datasets.CIFAR100(
-            root=dataroot,
-            train=True,
-            download=True,
-            transform=train_transform
-        )
-
-        datasets_['test_pt'] = torchvision.datasets.CIFAR100(
-            root=dataroot,
-            train=False,
-            download=True,
-            transform=val_transform
-        )
-
-        datasets_['test_ft'] = torchvision.datasets.CIFAR100(
-            root=dataroot,
-            train=False,
-            download=True,
-            transform=val_transform
-        )
-
-        datasets_['train_pt'].class_count  = { key_ : '500' for key_ in datasets_['train_pt'].class_to_idx.keys() }
-        datasets_['test_pt'].class_count  = { key_ : '500' for key_ in datasets_['test_pt'].class_to_idx.keys() }
-        
-        datasets_['train_pt'].class_list  = bidict(datasets_['train_pt'].class_to_idx)
-        datasets_['test_pt'].class_list  = bidict(datasets_['test_pt'].class_to_idx)
+    # create pretrain gna fine tune datsets
+    datasets_['train_pt'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, debug=debug, resize=args.resize)
+    datasets_['test_pt'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, debug=debug, resize=args.resize)
+    datasets_['train_ft'] = Fashion_Dataset(args.dataset, 'train', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
+    datasets_['test_ft'] = Fashion_Dataset(args.dataset, 'test', dir_=args.dir_, finetune=True, debug=debug, resize=args.resize)
 
 
-        datasets_['train_ft'].class_count  = { key_ : '500' for key_ in datasets_['train_ft'].class_to_idx.keys() }
-        datasets_['test_ft'].class_count  = { key_ : '500' for key_ in datasets_['test_ft'].class_to_idx.keys() }
-        
-        datasets_['train_ft'].class_list  = bidict(datasets_['train_ft'].class_to_idx)
-        datasets_['test_ft'].class_list  = bidict(datasets_['test_ft'].class_to_idx)
-
-
-        # import pdb; pdb.set_trace()
-
+    # This dict stores the dataloaders of finetune and pre-train
     dataloaders_ = {}
     for key, val in datasets_.items():
         if 'test' in key:
+            # Sampler is turned off for the testing phase
             dataloaders_[key] = DataLoader(datasets_[key], batch_size=args.batch_size, 
                                       num_workers=args.num_workers)
         else:
             sampler = None
             if args.add_sampler:
-                # these are weights for the classes
-                if args.add_sampler == 1:
-                    dict_samp = datasets_[key].class_count
-                elif args.add_sampler == 2:
-                    dict_samp = datasets_[key].class_count_test
+                # Weighted sampler, instance are sampled based on total_count[ class i ] / total_num of examples
+                dict_samp = datasets_[key].class_count
                 wts = [ val for keu, val in dict_samp.items()]
                 wts = [1 / wt if wt else 0 for wt in wts ]
                 wts = torch.FloatTensor(wts)
 
                 # weights for the samples
                 sample_wts = [wts[t] for t in datasets_[key].data['class']]
-
                 sampler = torch.utils.data.WeightedRandomSampler(sample_wts, len(sample_wts))
                 dataloaders_[key] = DataLoader(datasets_[key], batch_size=args.batch_size, 
                                     sampler=sampler, num_workers=args.num_workers)
             else:
+                # Suffle only no sampler
                 dataloaders_[key] = DataLoader(datasets_[key], batch_size=args.batch_size, 
                                     sampler=sampler, num_workers=args.num_workers, shuffle=True)
 
-
+    # all parameters passed to the network
     config = {'loaders' : {'pretrain' : [dataloaders_['train_pt'], dataloaders_['test_pt']] , 
                            'finetune' : [dataloaders_['train_ft'], dataloaders_['test_ft']]},
                'gpuid': args.gpuid, 'lr': args.lr, 'momentum': args.momentum, 'weight_decay': args.weight_decay,'schedule': args.schedule,
@@ -194,20 +132,25 @@ def main():
             check_data(val, args.batch_size, key)
     
     net = Network_(config)
+    
     if not args.model_weights and not args.only_finetune:
     # pre train 
         net.train_(args.epochs)
     else:
         print('------------------SKIPPING THE PRETRAN---------------')
+    
     if args.test == 'finetune_test':
         net.str_ = 'finetune'
         net.switch_finetune()
+        net.load_model()
         acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)
     elif args.test == 'pretrain_test':
         net.str_ = 'pretrain'
+        net.load_model()
         acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)
 
     else:
+        net.load_model()
         net.train_(args.epochs, finetune=True)
 
     dict_json = {'acc_1': acc.avg, 'acc_5': acc_5.avg, 'acc_cl_1' : acc_cl_1, 'acc_cl_5':acc_cl_5 }
@@ -218,32 +161,6 @@ def main():
     with open(f'{str_name}_result.json', 'w') as fp:
         json.dump(dict_json, fp)
     
-
-def check_data(data_loader, num, str_):
-    import matplotlib.pyplot as plt
-    import numpy as np
-    dataiter = iter(data_loader)
-    dir_ = os.path.join('viz', str_)
-    if not os.path.exists(dir_):
-        os.makedirs(dir_)
-    for ind in range(10):
-        
-        images, labels = dataiter.next()
-        images = images.numpy()
-
-        labels = labels.numpy()
-
-    # plot the images in the batch, along with the corresponding labels
-        fig = plt.figure(figsize=(25, 4))
-        for idx in np.arange(num):
-            ax = fig.add_subplot(1,num, idx+1, xticks=[], yticks=[])
-            plt.imshow(np.transpose(images[idx], (1, 2, 0)))
-            ax.set_title(data_loader.dataset.class_list.inverse[labels[idx]])
-        fig.savefig(os.path.join(dir_, str(ind) +'.png'  ))
-        plt.close()
-
-
-
 
 if __name__ == '__main__':
     main()

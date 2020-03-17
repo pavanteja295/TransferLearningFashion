@@ -141,6 +141,7 @@ def main():
     
     if args.test == 'finetune_test':
         net.str_ = 'finetune'
+#        import pdb; pdb.set_trace()
         net.switch_finetune()
         net.load_model()
         acc, acc_5, acc_cl_1, acc_cl_5, losses  = net.validation(net.test_loader, 0)

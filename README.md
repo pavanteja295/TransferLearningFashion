@@ -80,7 +80,7 @@ python main.py --test pretrain_test/finetune_test --model_weights PRETRAIN/FINET
 - Results on Fashion Finetune:
 
 | Model Name | Acc | 
-| --- | --- | --- |
+| --- | --- |
 | ResNet_224px with freeze till layer 4 pretrained*  | 46.72 | 
 | ResNet_224px with freeze only FC pretrained| 39.39|
 | ResNet_224px with  weight decay 0  |37.09|   

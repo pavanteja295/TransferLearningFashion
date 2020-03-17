@@ -82,6 +82,7 @@ python inference/plots.py # Jsons obtained from testing the model
 | ResNet_IN_224px | 87.02|  95.16| 82.1 | 90.2 | 71.8|95.58
 | ResNet_50 | 86.8 | 94.71 | 81.74 | 89.1| 72.31|95.21
 
+### Top-1/Top-5 Pretrain  bar plot
 ![Train/Test Curves](images/pretrain.png)|
 
 - Results on Fashion Finetune:
@@ -94,3 +95,5 @@ python inference/plots.py # Jsons obtained from testing the model
 | ResNet_224px trained from scratch | 45.82 | 
 | ResNet_224px with weighted Sampler | 12-11 |
 
+### Top-1/Top-5 bar Finetune plot
+![Train/Test Curves](images/finetune.png)|

@@ -63,7 +63,12 @@ python main.py --test pretrain_test/finetune_test --model_weights PRETRAIN/FINET
 ```
 
 
+#### Notes
 
+For plotting Top-1 and Top-5 accuracies use :
+```
+python inference/plots.py # Jsons obtained from testing the model
+```
 
 
 ## Results
@@ -76,6 +81,8 @@ python main.py --test pretrain_test/finetune_test --model_weights PRETRAIN/FINET
 | CResNet_80px | 87.25|95.23| 84.29 | 91.21 | 70.2|96.72
 | ResNet_IN_224px | 87.02|  95.16| 82.1 | 90.2 | 71.8|95.58
 | ResNet_50 | 86.8 | 94.71 | 81.74 | 89.1| 72.31|95.21
+
+![Train/Test Curves](images/pretrain.png)|
 
 - Results on Fashion Finetune:
 

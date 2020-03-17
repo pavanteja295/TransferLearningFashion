@@ -31,11 +31,12 @@ for key_, json_file in json_files.items():
 	acc_keys_ = [key_ for key_, val in dict_sort_1.items()]
 	acc_1 = [ round(val_[0] * 100, 2)  for key_, val_ in dict_sort_1.items()]
 	cls_num = [f'{key_}_{int(val_[2])}'   for key_, val_ in dict_sort_1.items()]
-	plt.bar(x_ticks-0.2, acc_1, width=0.4,  align='center', tick_label = cls_num)
+	plt.bar(x_ticks-0.2, acc_1, width=0.4,  align='center', tick_label = cls_num, label='Top-1')
 	#if key_== 'pretrain':
 	acc_5 = [ round(val_[0]* 100, 2) for key_, val_ in dict_sort_5.items()]
-	plt.bar(x_ticks + 0.2, acc_5, width=0.4, color= 'orange',align='center', tick_label = cls_num)
+	plt.bar(x_ticks + 0.2, acc_5, width=0.4, color= 'orange',align='center', tick_label = cls_num,  label='Top-5')
 
+	plt.legend()
 	plt.xlim(0, len(x_ticks))
 	plt.xticks(rotation=90)
 	plt.subplots_adjust(left=0.05, bottom=0.36, right=1.0, top=0.96)

@@ -236,8 +236,6 @@ class Network_(nn.Module):
         def train_(self, epochs, finetune=False):
                 str_ = 'pretrain'
                 self.str_ = str_
-                
-
 
                 if finetune:
                         self.switch_finetune()
